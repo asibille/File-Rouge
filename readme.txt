@@ -44,7 +44,7 @@ backend/
 │   ├── Contact.js
 │
 │── Route/
-│   ├── Route.js        # Auth routes (login/register)
+│   ├── Route.js        
 │── Middleware/
 │   ├── authMiddleware.js
 │
