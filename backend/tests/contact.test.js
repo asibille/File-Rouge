@@ -1,7 +1,7 @@
 // tests/contact.test.js
 const request = require('supertest');
 const mongoose = require('mongoose');
-const app = require('../server'); // Assure-toi d'exporter app dans server.js
+const app = require('../Server'); // Assure-toi d'exporter app dans server.js
 
 let token;
 let userId;

@@ -1,4 +1,4 @@
-const Contact = require('../models/Contact');
+const Contact = require('../Models/Contact');
 
 class ContactService {
   static async getAll(userId) {

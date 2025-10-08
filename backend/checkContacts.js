@@ -1,6 +1,6 @@
 require('dotenv').config();
 const mongoose = require('mongoose');
-const Contact = require('./models/Contact');
+const Contact = require('./Models/Contact');
 
 async function main() {
   try {
