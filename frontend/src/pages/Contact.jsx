@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext';
 export default function Contacts() {
   const { user, logout } = useAuth();
   const [contacts, setContacts] = useState([]);
-  const [firstName, setFirstName] = useState(''); // 👈 renommé correctement
+  const [firstName, setFirstName] = useState('');
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [editingId, setEditingId] = useState(null);
@@ -25,13 +25,18 @@ export default function Contacts() {
   }
 
   function validatePhone(number) {
-    const length = number.replace(/\D/g, '').length;
-    return length >= 10 && length <= 20;
+    const digits = number.replace(/\D/g, '');
+    return digits.length >= 10 && digits.length <= 20;
   }
 
   async function handleAdd(e) {
     e.preventDefault();
     setError('');
+
+    if (!firstName.trim() || !name.trim()) {
+      setError('Le prénom et le nom sont obligatoires.');
+      return;
+    }
 
     if (!validatePhone(phone)) {
       setError('Le numéro doit contenir entre 10 et 20 chiffres.');
@@ -39,7 +44,7 @@ export default function Contacts() {
     }
 
     try {
-      const res = await api.post('/contacts', { firstName, name, phone }); // ✅ corrigé ici
+      const res = await api.post('/contacts', { firstName, name, phone });
       setContacts([...contacts, res.data]);
       setFirstName('');
       setName('');
@@ -53,6 +58,11 @@ export default function Contacts() {
   async function handleUpdate(e) {
     e.preventDefault();
     setError('');
+
+    if (!firstName.trim() || !name.trim()) {
+      setError('Le prénom et le nom sont obligatoires.');
+      return;
+    }
 
     if (!validatePhone(phone)) {
       setError('Le numéro doit contenir entre 10 et 20 chiffres.');
@@ -75,8 +85,8 @@ export default function Contacts() {
   function startEdit(contact) {
     setEditingId(contact._id);
     setFirstName(contact.firstName || '');
-    setName(contact.name);
-    setPhone(contact.phone);
+    setName(contact.name || '');
+    setPhone(contact.phone || '');
     setError('');
   }
 
@@ -92,24 +102,24 @@ export default function Contacts() {
   return (
     <div className="container">
       <h2>Mes contacts</h2>
-      <p>Connecté en tant que <strong>{user.email}</strong></p>
+      <p>Connecté en tant que <strong>{user?.email}</strong></p>
 
       <button className="form-btn logout-btn" onClick={logout}>Déconnexion</button>
 
       <form onSubmit={editingId ? handleUpdate : handleAdd}>
-        <input 
+        <input
           placeholder="Prénom"
           value={firstName}
           onChange={e => setFirstName(e.target.value)}
           required
         />
-        <input 
+        <input
           placeholder="Nom"
           value={name}
           onChange={e => setName(e.target.value)}
           required
         />
-        <input 
+        <input
           placeholder="Téléphone"
           value={phone}
           onChange={e => setPhone(e.target.value)}
@@ -121,15 +131,15 @@ export default function Contacts() {
             {editingId ? 'Mettre à jour' : 'Ajouter'}
           </button>
           {editingId && (
-            <button 
+            <button
               type="button"
               className="contact-form-btn cancel-btn"
-              onClick={() => { 
-                setEditingId(null); 
-                setFirstName(''); 
-                setName(''); 
-                setPhone(''); 
-                setError(''); 
+              onClick={() => {
+                setEditingId(null);
+                setFirstName('');
+                setName('');
+                setPhone('');
+                setError('');
               }}
             >
               Annuler
@@ -142,7 +152,7 @@ export default function Contacts() {
         {contacts.map(c => (
           <li key={c._id} className="contact-card">
             <div className="contact-card-info">
-              {c.firstName} {c.name} — {c.phone}
+              {c.firstName} — {c.name} — {c.phone}
             </div>
             <div className="contact-card-buttons">
               <button className="edit-btn" onClick={() => startEdit(c)}>Éditer</button>
