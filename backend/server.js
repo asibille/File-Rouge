@@ -20,7 +20,7 @@ if (process.env.NODE_ENV !== "test") {
     .connect(process.env.MONGO_URI)
     .then(() => {
       console.log("✅ MongoDB connecté");
-      const PORT = process.env.PORT || 1000;
+      const PORT = process.env.PORT || 10000;
       app.listen(PORT, () =>
         console.log(`✅ Serveur lancé sur http://localhost:${PORT}`)
       );
