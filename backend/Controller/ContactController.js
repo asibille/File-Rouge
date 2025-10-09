@@ -1,4 +1,3 @@
-// ContactController.js
 const ContactService = require('../Service/ContactService');
 
 class ContactController {
