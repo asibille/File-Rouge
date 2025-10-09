@@ -9,7 +9,7 @@ require("dotenv").config();
 const app = express();
 
 app.use(cors({
-  origin: process.env.FRONTEND_URL || "https://file-rouge-1.onrender.com/"
+  origin: process.env.FRONTEND_URL || "https://file-rouge-1.onrender.com"
 }));
 
 app.use(express.json());
