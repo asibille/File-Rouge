@@ -6,7 +6,7 @@ readme_content = """# 🚀 Projet Fil Rouge – Backend (Node.js + Express + Mon
 Backend du projet **Fil Rouge**, développé avec **Node.js**, **Express** et **MongoDB (Mongoose)**.  
 Il gère :
 
-- ✅ L’authentification des utilisateurs (inscription, connexion, contact associé)
+- ✅ L’authentification des utilisateurs (inscription, connexion, liste tes contacts)
 - 📇 La gestion des contacts (CRUD)
 - ☎️ La validation des numéros de téléphone (10 à 20 chiffres)
 - 📘 La documentation des API avec **Swagger**
