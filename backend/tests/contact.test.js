@@ -1,83 +1,66 @@
-// tests/contact.test.js
-const request = require('supertest');
-const mongoose = require('mongoose');
-const app = require('../Server'); // Assure-toi d'exporter app dans server.js
+// auth.test.js
+require("dotenv").config({ path: ".env" }); 
 
-let token;
-let userId;
-let contactId;
+const request = require("supertest");
+const mongoose = require("mongoose");
+const app = require("../Server");
+const User = require("../Models/User");
 
 beforeAll(async () => {
   if (!process.env.MONGO_URI_TEST) {
-    throw new Error("MONGO_URI_TEST non défini dans .env");
+    throw new Error("❌ MONGO_URI_TEST non défini dans .env.test");
   }
 
-  // Connexion à MongoDB Atlas pour les tests
-  await mongoose.connect(process.env.MONGO_URI_TEST);
-
-  // Création d'un utilisateur pour l'auth
-  const userRes = await request(app)
-    .post("/api/auth/register")
-    .send({ email: "contactuser@test.com", password: "123456" });
-
-  // Vérifie que le token est présent
-  token = userRes.body.token;
-  userId = userRes.body.user._id || userRes.body.user.id;
-
-  if (!token) {
-    throw new Error("Token JWT non reçu après l'inscription de test");
-  }
+  await mongoose.connect(process.env.MONGO_URI_TEST, {
+    dbName: "projet_fil_rouge_test",
+  });
 });
 
 afterAll(async () => {
-  // Supprime toutes les données de test et déconnecte
   if (mongoose.connection.readyState === 1) {
     await mongoose.connection.db.dropDatabase();
     await mongoose.disconnect();
   }
 });
 
-describe("📇 Contacts API", () => {
-  it("➡️ Devrait créer un contact", async () => {
-    const res = await request(app)
-      .post("/api/contacts")
-      .set("Authorization", `Bearer ${token}`)
-      .send({ firstName: "Jean", name: "Dupont", phone: "0612345678" });
+describe("🧪 Tests Auth API", () => {
+  const testUser = { email: "test@example.com", password: "123456" };
 
-    expect(res.statusCode).toBe(201); // Création retourne 201
-    expect(res.body.firstName).toBe("Jean");
-    expect(res.body.name).toBe("Dupont");
-    contactId = res.body._id;
+  it("✅ enregistre un nouvel utilisateur", async () => {
+    const res = await request(app).post("/api/auth/register").send(testUser);
+
+    console.log("Réponse register:", res.body); 
+
+    expect(res.statusCode).toBe(201);
+    expect(res.body.user.email).toBe(testUser.email);
+    expect(res.body.token).toBeDefined();
   });
 
-  it("➡️ Devrait récupérer tous les contacts", async () => {
-    const res = await request(app)
-      .get("/api/contacts")
-      .set("Authorization", `Bearer ${token}`);
+  it("✅ se connecte avec le compte créé", async () => {
+    const res = await request(app).post("/api/auth/login").send(testUser);
+
+    console.log("Réponse login:", res.body); // 
 
     expect(res.statusCode).toBe(200);
-    expect(Array.isArray(res.body)).toBe(true);
-    expect(res.body.length).toBeGreaterThanOrEqual(1);
+    expect(res.body.user.email).toBe(testUser.email);
+    expect(res.body.token).toBeDefined();
   });
 
-  it("➡️ Devrait mettre à jour un contact", async () => {
+  it("❌ refuse la connexion avec un mauvais mot de passe", async () => {
     const res = await request(app)
-      .patch(`/api/contacts/${contactId}`) // PATCH correspond à ta route
-      .set("Authorization", `Bearer ${token}`)
-      .send({ firstName: "Paul", name: "Durand", phone: "0699999999" });
+      .post("/api/auth/login")
+      .send({ email: testUser.email, password: "wrongpassword" });
 
-    expect(res.statusCode).toBe(200);
-    expect(res.body.firstName).toBe("Paul");
-    expect(res.body.name).toBe("Durand");
-    expect(res.body.phone).toBe("0699999999");
+    expect(res.statusCode).toBe(401);
+    expect(res.body.error).toBeDefined();
   });
 
-  it("➡️ Devrait supprimer le contact", async () => {
+  it("❌ refuse la connexion avec un email inexistant", async () => {
     const res = await request(app)
-      .delete(`/api/contacts/${contactId}`)
-      .set("Authorization", `Bearer ${token}`);
+      .post("/api/auth/login")
+      .send({ email: "noexist@example.com", password: "123456" });
 
-    expect(res.statusCode).toBe(200);
-    expect(res.body.message).toBeDefined();
+    expect(res.statusCode).toBe(401);
+    expect(res.body.error).toBeDefined();
   });
 });

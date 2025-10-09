@@ -20,10 +20,10 @@ export default function ContactForm({ initial = null, onSaved }) {
     setLoading(true)
     try {
       if (initial && (initial._id || initial.id)) {
-        // PATCH pour mise à jour
+        
         await api.patch(`/contacts/${initial._id || initial.id}`, { firstName, name, phone })
       } else {
-        // POST pour création
+        
         await api.post('/contacts', { firstName, name, phone })
       }
 

@@ -9,18 +9,17 @@ async function main() {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
-    console.log('✅ Connecté à MongoDB Atlas');
+    console.log(' Connecté à MongoDB Atlas');
 
-    // Remplace par l'ID d'un utilisateur existant dans ta collection 'users'
     const userId = '68e284665f5eea59789d837f';
 
-    console.log(`🔍 Recherche des contacts pour l'utilisateur ${userId}...`);
+    console.log(` Recherche des contacts pour l'utilisateur ${userId}...`);
     const contacts = await Contact.find({ userId });
 
     if (contacts.length === 0) {
-      console.log('⚠️ Aucun contact trouvé pour cet utilisateur.');
+      console.log(' Aucun contact trouvé pour cet utilisateur.');
     } else {
-      console.log(`📇 ${contacts.length} contact(s) trouvé(s) :`);
+      console.log(` ${contacts.length} contact(s) trouvé(s) :`);
       contacts.forEach((c, index) => {
         console.log(`${index + 1}. ${c.firstName} ${c.name} — ${c.phone} — ${c.email}`);
       });
@@ -29,7 +28,7 @@ async function main() {
     await mongoose.disconnect();
     console.log('🔌 Déconnexion de MongoDB réussie');
   } catch (err) {
-    console.error('❌ Erreur :', err.message);
+    console.error(' Erreur :', err.message);
   }
 }
 

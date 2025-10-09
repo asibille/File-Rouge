@@ -8,29 +8,29 @@ require("dotenv").config();
 
 const app = express();
 
-// ✅ CORS : autoriser ton frontend Render
 app.use(cors({
-  origin: process.env.FRONTEND_URL || "*"
+  origin: process.env.FRONTEND_URL || "https://file-rouge-1.onrender.com/"
 }));
 
 app.use(express.json());
 
-// Routes API
+
 app.use("/api", routes);
 
-// ✅ Connexion MongoDB uniquement si on n’est pas en test
+const { swaggerUi, swaggerSpec } = require("./swagger");
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 if (process.env.NODE_ENV !== "test") {
   mongoose
     .connect(process.env.MONGO_URI)
     .then(() => {
-      console.log("✅ MongoDB connecté");
+      console.log(" MongoDB connecté");
       const PORT = process.env.PORT || 10000;
       app.listen(PORT, () =>
-        console.log(`✅ Serveur lancé sur http://localhost:${PORT}`)
+        console.log(` Serveur lancé sur http://localhost:${PORT}`)
       );
     })
-    .catch((err) => console.error("❌ Erreur MongoDB :", err));
+    .catch((err) => console.error(" Erreur MongoDB :", err));
 }
 
-// ✅ Exporter l’app pour Jest / Supertest
 module.exports = app;

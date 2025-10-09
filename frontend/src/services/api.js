@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "https://file-rouge.onrender.com/api" //"http://localhost:10000/api"
+  baseURL: import.meta.env.VITE_API_URL || "https://file-rouge.onrender.com/api" 
 });
 
 api.interceptors.request.use((config) => {

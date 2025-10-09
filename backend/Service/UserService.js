@@ -1,9 +1,9 @@
-// Service/UserService.js
+
 const User = require('../Models/User');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-const SECRET = process.env.JWT_SECRET || 'secret123';
+const SECRET = process.env.JWT_SECRET;
 
 class UserService {
   static async register(email, password) {
