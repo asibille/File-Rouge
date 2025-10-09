@@ -230,9 +230,11 @@ Jest
 🧭 Déploiement
 Déployé sur Render.com :
 
-Backend → https://file-rouge.onrender.com
+Backend  → https://file-rouge.onrender.com
 
 Frontend → https://file-rouge-1.onrender.com
+
+SWAGGER  → https://file-rouge.onrender.com/api-docs/
 
 Configuration du CORS dans Server.js :
 
